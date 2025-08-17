@@ -7,12 +7,18 @@ import (
 )
 
 func main() {
+	router := setupRouter()
+
+	router.Run()
+}
+
+func setupRouter() *gin.Engine {
 	router := gin.Default()
 
 	router.POST("/items/:customerId", listItemsByCustomer)
 	router.POST("/items/summary", listSummary)
 
-	router.Run()
+	return router
 }
 
 func listItemsByCustomer(c *gin.Context) {
@@ -38,14 +44,14 @@ func listItemsByCustomer(c *gin.Context) {
 	}
 
 	if len(customerItems) == 0 {
-		c.IndentedJSON(
+		c.JSON(
 			http.StatusNotFound,
 			gin.H{"error": fmt.Sprintf("Could not find customer with ID '%s'", customerId)},
 		)
 		return
 	}
 
-	c.IndentedJSON(http.StatusOK, &CustomerItemResponse{customerItems})
+	c.JSON(http.StatusOK, &CustomerItemResponse{customerItems})
 }
 
 func listSummary(c *gin.Context) {
@@ -63,7 +69,7 @@ func listSummary(c *gin.Context) {
 		items = append(items, v)
 	}
 
-	c.IndentedJSON(http.StatusOK, items)
+	c.JSON(http.StatusOK, &ItemSummaryResponse{items})
 }
 
 func summaryMapFromOrders(orders Orders) *map[string]*CustomerSummary {
