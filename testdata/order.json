@@ -1,0 +1,42 @@
+{
+    "orders" :
+    [
+        {
+            "customerId": "01",
+            "orderId": "50",
+            "timestamp": "1637245070513",
+            "items": [
+                {
+                    "itemId": "20201",
+                    "costEur": 2
+                }
+            ]
+        },
+        {
+            "customerId": "02",
+            "orderId": "25",
+            "timestamp": "1637245070514",
+            "items": [
+                {
+                    "itemId": "20205",
+                    "costEur": 5
+                }
+            ]
+        },
+        {
+            "customerId": "01",
+            "orderId": "3",
+            "timestamp": "1637245070518",
+            "items": [
+                {
+                    "itemId": "20202",
+                    "costEur": 1.5
+                },
+                {
+                    "itemId": "50242",
+                    "costEur": 15
+                }
+            ]
+        }
+    ]
+}
