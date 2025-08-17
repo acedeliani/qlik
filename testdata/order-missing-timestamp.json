@@ -1,0 +1,15 @@
+{
+    "orders" :
+    [
+        {
+            "customerId": "01",
+            "orderId": "50",
+            "items": [
+                {
+                    "itemId": "20201",
+                    "costEur": 2
+                }
+            ]
+        }
+    ]
+}
