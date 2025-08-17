@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -26,13 +25,13 @@ func listItemsByCustomer(c *gin.Context) {
 	// Find the items that belong to the customer
 	// Assumption: the same customer may occur several times in the order collection
 	customerId := c.Param("customerId")
-	var customerItems []CustomerItem
+	var customerItems []*CustomerItem
 
 	for _, o := range orders.Orders {
 		if o.CustomerId == customerId {
 			// Create and append a CustomerItem from an Item
 			for _, i := range o.Items {
-				customerItems = append(customerItems, CustomerItem{o.CustomerId, i.ItemId, i.CostEur})
+				customerItems = append(customerItems, &CustomerItem{o.CustomerId, i.ItemId, i.CostEur})
 			}
 		}
 	}
@@ -41,5 +40,37 @@ func listItemsByCustomer(c *gin.Context) {
 }
 
 func listSummary(c *gin.Context) {
-	fmt.Println("Inside listSummary")
+	var orders Orders
+
+	if err := c.ShouldBindJSON(&orders); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	customerMap := summaryMapFromOrders(orders)
+
+	var items []*CustomerSummary
+	for _, v := range *customerMap {
+		items = append(items, v)
+	}
+
+	c.IndentedJSON(http.StatusOK, items)
+}
+
+func summaryMapFromOrders(orders Orders) *map[string]*CustomerSummary {
+	customerMap := make(map[string]*CustomerSummary)
+
+	for _, o := range orders.Orders {
+		if _, ok := customerMap[o.CustomerId]; !ok {
+			customerMap[o.CustomerId] = &CustomerSummary{CustomerId: o.CustomerId}
+		}
+
+		customerMap[o.CustomerId].NbrOfPurchasedItems += len(o.Items)
+
+		for _, i := range o.Items {
+			customerMap[o.CustomerId].TotalAmountEur += i.CostEur
+		}
+	}
+
+	return &customerMap
 }

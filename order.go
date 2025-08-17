@@ -6,14 +6,14 @@ type Item struct {
 }
 
 type Order struct {
-	CustomerId string `json:"customerId" binding:"required"`
-	OrderId    string `json:"orderId" binding:"required"`
-	Timestamp  string `json:"timestamp" binding:"required"`
-	Items      []Item `json:"items" binding:"required,dive"`
+	CustomerId string  `json:"customerId" binding:"required"`
+	OrderId    string  `json:"orderId" binding:"required"`
+	Timestamp  string  `json:"timestamp" binding:"required"`
+	Items      []*Item `json:"items" binding:"required,dive"`
 }
 
 type Orders struct {
-	Orders []Order `json:"orders" binding:"required,dive"`
+	Orders []*Order `json:"orders" binding:"required,dive"`
 }
 
 // Responses
@@ -25,5 +25,16 @@ type CustomerItem struct {
 
 // Response for /items/:customerId
 type CustomerItemResponse struct {
-	Items []CustomerItem `json:"items" binding:"required,dive"`
+	Items []*CustomerItem `json:"items"`
+}
+
+type CustomerSummary struct {
+	CustomerId          string  `json:"customerId"`
+	NbrOfPurchasedItems int     `json:"nbrOfPurchasedItems"`
+	TotalAmountEur      float32 `json:"totalAmountEur"`
+}
+
+// Response for /items/summary
+type ItemSummaryResponse struct {
+	Items []*CustomerSummary `json:"items"`
 }
