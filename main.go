@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
@@ -34,6 +35,14 @@ func listItemsByCustomer(c *gin.Context) {
 				customerItems = append(customerItems, &CustomerItem{o.CustomerId, i.ItemId, i.CostEur})
 			}
 		}
+	}
+
+	if len(customerItems) == 0 {
+		c.IndentedJSON(
+			http.StatusNotFound,
+			gin.H{"error": fmt.Sprintf("Could not find customer with ID '%s'", customerId)},
+		)
+		return
 	}
 
 	c.IndentedJSON(http.StatusOK, &CustomerItemResponse{customerItems})
